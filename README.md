@@ -34,11 +34,11 @@ By promoting regular breaks and healthy routines, DailyStretch aims to improve f
 
 - **Developers**:  
 
-&nbsp; - Pangan, Arnnon Zevv C.  
+  &nbsp; - Pangan, Arnnon Zevv C.  
 
-&nbsp; - Mandawe, John Kheinzy A.  
+  &nbsp; - Mandawe, John Kheinzy A.  
 
-&nbsp; - Maluto, John Lloyd  
+  &nbsp; - Maluto, John Lloyd  
 
 
 

@@ -1,6 +1,6 @@
 # 🌱 DailyStretch  
 
-*A Web-Based Study Timer \& Wellness Reminder System*
+\*A Web-Based Study Timer \& Wellness Reminder System\*
 
 
 

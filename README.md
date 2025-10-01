@@ -1,6 +1,6 @@
-\# 🌱 DailyStretch  
+# 🌱 DailyStretch  
 
-\*A Web-Based Study Timer \& Wellness Reminder System\*
+*A Web-Based Study Timer \& Wellness Reminder System*
 
 
 
@@ -8,11 +8,11 @@
 
 
 
-\## 📌 Overview  
+## 📌 Overview  
 
-DailyStretch is a \*\*web-based application\*\* designed to help students build healthier and more balanced study habits.  
+DailyStretch is a **web-based application** designed to help students build healthier and more balanced study habits.  
 
-It combines \*\*productivity tools\*\* (customizable study \& break timers) with \*\*wellness features\*\* (hydration/stretch reminders, guided routines, motivational quotes).  
+It combines **productivity tools** (customizable study & break timers) with **wellness features** (hydrationstretch reminders, guided routines, motivational quotes).  
 
 
 
@@ -24,39 +24,21 @@ By promoting regular breaks and healthy routines, DailyStretch aims to improve f
 
 
 
-\## 👥 Team Members \& Roles  
+## 👥 Team Members & Roles  
 
-\- \*\*Product Owner\*\*: Lauro, Jhon Gil V.  
+- **Product Owner**: Lauro, Jhon Gil V.  
 
-\- \*\*Business Analysts\*\*: Legaspino, James Stefan C., Gersamio, Rudyard Axel L.  
+- **Business Analysts**: Legaspino, James Stefan C., Gersamio, Rudyard Axel L.  
 
-\- \*\*Scrum Master\*\*: Lariosa, Vinzent Emmanuel M.  
+- **Scrum Master**: Lariosa, Vinzent Emmanuel M.  
 
-\- \*\*Developers\*\*:  
+- **Developers**:  
 
-&nbsp; - Pangan, Arnnon Zevv C.  
+  &nbsp; - Pangan, Arnnon Zevv C.  
 
-&nbsp; - Mandawe, John Kheinzy A.  
+  &nbsp; - Mandawe, John Kheinzy A.  
 
-&nbsp; - Maluto, John Lloyd  
-
-
-
----
-
-
-
-\## 🎯 Objectives  
-
-\- Provide \*\*customizable study \& break timers\*\*  
-
-\- Send \*\*timely reminders\*\* for hydration and stretching  
-
-\- Include a \*\*library of at least 10 guided wellness routines\*\*  
-
-\- Allow \*\*user accounts\*\* (registration, login, save preferences)  
-
-\- Deliver a \*\*responsive dashboard\*\* for managing study sessions  
+  &nbsp; - Maluto, John Lloyd  
 
 
 
@@ -64,19 +46,17 @@ By promoting regular breaks and healthy routines, DailyStretch aims to improve f
 
 
 
-\## ✨ Core Features  
+## 🎯 Objectives  
 
-\- ⏱️ Study \& Break Timers – customizable session lengths  
+- Provide **customizable study & break timers**  
 
-\- 🔔 Notifications – reminders for hydration \& stretching  
+- Send **timely reminders** for hydration and stretching  
 
-\- 🧘 Wellness Library – at least 10 guided routines for breaks  
+- Include a **library of at least 10 guided wellness routines**  
 
-\- 👤 User Accounts – registration, login, saved preferences  
+- Allow **user accounts** (registration, login, save preferences)  
 
-\- 📊 Student Dashboard – manage study sessions \& activities  
-
-\- 💬 Motivational Quotes – encourage healthy, consistent habits  
+- Deliver a **responsive dashboard** for managing study sessions  
 
 
 
@@ -84,17 +64,19 @@ By promoting regular breaks and healthy routines, DailyStretch aims to improve f
 
 
 
-\## 🛠️ Tech Stack  
+## ✨ Core Features  
 
-\- \*\*Frontend\*\*: HTML, CSS, JavaScript  
+- ⏱️ Study & Break Timers – customizable session lengths  
 
-\- \*\*Backend\*\*: Django (Python)  
+- 🔔 Notifications – reminders for hydration & stretching  
 
-\- \*\*Database\*\*: SQLite (default, dev) / MySQL or PostgreSQL (prod-ready)  
+- 🧘 Wellness Library – at least 10 guided routines for breaks  
 
-\- \*\*Version Control\*\*: Git + GitHub  
+- 👤 User Accounts – registration, login, saved preferences  
 
-\- \*\*Methodology\*\*: Agile (Scrum, 2-week sprints)  
+- 📊 Student Dashboard – manage study sessions & activities  
+
+- 💬 Motivational Quotes – encourage healthy, consistent habits  
 
 
 
@@ -102,11 +84,29 @@ By promoting regular breaks and healthy routines, DailyStretch aims to improve f
 
 
 
-\## ⚙️ Setup Instructions  
+## 🛠️ Tech Stack  
+
+- **Frontend**: HTML, CSS, JavaScript  
+
+- **Backend**: Django (Python)  
+
+- **Database**: SQLite (default, dev) / MySQL or PostgreSQL (prod-ready)  
+
+- **Version Control**: Git + GitHub  
+
+- **Methodology**: Agile (Scrum, 2-week sprints)  
 
 
 
-\### 1. Clone the Repository  
+---
+
+
+
+## ⚙️ Setup Instructions  
+
+
+
+### 1. Clone the Repository  
 
 ```bash
 

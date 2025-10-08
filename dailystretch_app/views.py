@@ -4,24 +4,40 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-# Registration
+# Registrations
 
 
 def register_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match!')
+            return redirect('register')
+
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists!')
             return redirect('register')
+
         user = User.objects.create_user(
-            username=username, email=email, password=password)
+            username=username, email=email, password=password1)
         user.save()
         messages.success(
             request, 'Account created successfully! Please login.')
         return redirect('login')
+
     return render(request, 'dailystretch_app/register.html')
+
+
+# Landing
+
+
+def landing_page(request):
+    return render(request, 'dailystretch_app/landing.html')
+
 
 # Login
 

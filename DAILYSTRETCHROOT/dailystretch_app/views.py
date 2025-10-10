@@ -11,19 +11,32 @@ def register_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
-        if password1 != password2:
-            messages.error(request, 'Passwords do not match!')
-            return redirect('register')
+        errors = {}
 
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists!')
-            return redirect('register')
+            errors['username'] = 'Username already exists!'
+
+        if User.objects.filter(email=email).exists():
+            errors['email'] = 'Email already in use!'
+
+        if password != confirm_password:
+            errors['password'] = 'Passwords do not match!'
+
+        if len(password) < 8:
+            errors['password'] = 'Password must be at least 8 characters.'
+
+        import re
+        if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
+            errors['password'] = 'Password must contain at least one letter and one number.'
+
+        if errors:
+            return render(request, 'dailystretch_app/register.html', {'errors': errors, 'username': username, 'email': email})
 
         user = User.objects.create_user(
-            username=username, email=email, password=password1)
+            username=username, email=email, password=password)
         user.save()
         messages.success(
             request, 'Account created successfully! Please login.')

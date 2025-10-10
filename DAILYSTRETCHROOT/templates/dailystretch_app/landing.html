@@ -9,6 +9,7 @@
 </head>
 
 <body>
+
   <!-- === NAVIGATION === -->
   <nav>
     <div class="nav-left">
@@ -16,11 +17,11 @@
       <p>DailyStretch</p>
     </div>
     <div class="nav-right">
-      <a onclick="openModal('loginModal')" style="cursor: pointer;">Login</a>
+  <a href="{% url 'login' %}">Login</a>
       <a href="#howitworks">How It Works</a>
       <a href="#features">Features</a>
       <a href="#benefits">Benefits</a>
-      <button onclick="openModal('registerModal')">Get Started</button>
+  <a href="{% url 'register' %}"><button>Get Started</button></a>
     </div>
   </nav>
 
@@ -34,8 +35,8 @@
     </p>
 
     <div>
-      <button onclick="openModal('registerModal')">Start Your Journey Free</button>
-      <button onclick="openModal('loginModal')">Sign In</button>
+      <button onclick="window.location.href='{% url 'register' %}'">Start Your Journey Free</button>
+      <button onclick="window.location.href='{% url 'login' %}'">Sign In</button>
     </div>
 
     <div class="extra-info">
@@ -105,7 +106,7 @@
       </div>
     </div>
 
-    <button onclick="openModal('registerModal')">Start Now - It's Free</button>
+  <a href="{% url 'register' %}"><button>Start Now - It's Free</button></a>
   </section>
 
   <!-- === FEATURES SECTION === -->
@@ -180,7 +181,7 @@
     <div class="last">
         <h2>Ready to Study Healthier?</h2>
         <p>Create your free account and start building better habits today</p>
-        <button onclick="openModal('registerModal')"> Get Started Now!</button>
+  <a href="{% url 'register' %}"><button>Get Started Now!</button></a>
     </div>
 
     </div>
@@ -196,38 +197,6 @@
     <p>© 2025 DailyStretch. All rights reserved.</p>
   </footer>
 
-  <!-- LOGIN MODAL -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('loginModal')">&times;</span>
-    <h2>Login</h2>
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-</div>
-
-<!-- REGISTER MODAL -->
-<div id="registerModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('registerModal')">&times;</span>
-    <h2>Register</h2>
-    <form method="POST" action="{% url 'register' %}">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password1" placeholder="Password" required>
-        <input type="password" name="password2" placeholder="Confirm Password" required>
-        <button type="submit">Register</button>
-    </form>
-
-  </div>
-</div>
-
-
-  <script src="{% static 'dailystretch_app/js/landing.js' %}"></script>
+  <!-- <script src="{% static 'dailystretch_app/js/landing.js' %}"></script> -->
 </body>
 </html>

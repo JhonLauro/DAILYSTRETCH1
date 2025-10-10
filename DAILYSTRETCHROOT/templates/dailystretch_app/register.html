@@ -1,12 +1,56 @@
-<h2>Register</h2>
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="submit">Register</button>
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | DailyStretch</title>
+  <link rel="stylesheet" href="{% static 'dailystretch_app/css/register.css' %}">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Top Navigation (X and text) -->
+    <div class="top-bar">
+      <img src="{% static 'dailystretch_app/images/login/back.png' %}" alt="Back" 
+           onclick="window.location.href='{% url 'landing' %}'" 
+           class="close-btn" style="cursor: pointer;">
+      <span>Back to Home</span>
+    </div>
+
+    <!-- Logo and Title -->
+    <div class="logo">
+      <img src="{% static 'dailystretch_app/images/logo.png' %}" alt="Logo">
+      <h1>DailyStretch</h1> 
+    </div>
+
+    <h2>Create Account</h2>
+    <p class="subtitle">Join us and start your wellness journey today</p>
+
+    <!-- Register Form -->
+    <form method="post">
+  {% csrf_token %}
+  <input type="text" name="username" placeholder="Username" value="{{ username|default:'' }}" required>
+  {% if errors.username %}<p class="message">{{ errors.username }}</p>{% endif %}
+  <input type="email" name="email" placeholder="Email" value="{{ email|default:'' }}" required>
+  {% if errors.email %}<p class="message">{{ errors.email }}</p>{% endif %}
+  <input type="password" name="password" placeholder="Password" required>
+  <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+  {% if errors.password %}<p class="message">{{ errors.password }}</p>{% endif %}
+
+  <button type="submit" class="register-btn">Register</button>
+    </form>
+
+    <p class="login-link">
+      Already have an account? <a href="{% url 'login' %}">Login</a>
+    </p>
+
+    {% for message in messages %}
+      <p class="message">{{ message }}</p>
+    {% endfor %}
+
+  </div>
+
+</body>
+</html>

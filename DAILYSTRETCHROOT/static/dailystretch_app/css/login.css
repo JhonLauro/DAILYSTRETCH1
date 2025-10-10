@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap');
+
+/* ====== GLOBAL ====== */
+body {
+  background: grey;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arimo', sans-serif;
+  margin: 0;
+}
+
+/* ====== CONTAINER ====== */
+.container {
+  background: linear-gradient(rgba(236, 238, 242, 1), rgba(255, 255, 255, 1));
+  backdrop-filter: blur(15px);
+  padding: 40px 60px;
+  border-radius: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  width: 448px;
+  height: 477.6px;
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  
+}
+
+/* ====== TOP BAR ====== */
+.top-bar {
+  color: rgba(10, 10, 10, 1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px; /* space between the image and text */
+  margin-bottom: 25px;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.top-bar img.close-btn {
+    margin-left: -10px;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.top-bar img.close-btn:hover {
+  transform: translateX(-3px); /* subtle slide when hovered */
+  opacity: 0.8;
+}
+
+.top-bar span {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 1px;
+  user-select: none; /* prevent text selection on click */
+}
+
+
+/* ====== LOGO ====== */
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+  margin-top: 8px;
+}
+
+.logo h1 {
+  font-size: 20px;
+  letter-spacing: 1px;
+  font-weight: 400;
+  color: rgba(10, 10, 10, 1);
+}
+
+/* ====== TITLES ====== */
+h2 {
+  font-size: 16px;
+  margin-bottom: 1px;
+  color: rgba(10, 10, 10, 1);
+  font-weight: 400;
+  text-align: left;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  font-weight: 400;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+/* ====== FORM ====== */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+}
+
+input {
+  width: 94.5%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background: #f8f8f8;
+  color: #000;
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.extra-text {
+  text-decoration: none;
+  color: rgba(3, 2, 19, 1);
+  font-size: 14px;
+  font-weight: 400;
+  align-self: flex-end;
+  margin-bottom: 10px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* underline animation */
+.extra-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1.5px;
+  background-color: rgba(251, 44, 54, 1);
+  transition: width 0.3s ease;
+}
+
+.extra-text:hover {
+  color: rgba(251, 44, 54, 1);
+  transform: translateX(5px);
+}
+
+.extra-text:hover::after {
+  width: 100%;
+}
+
+.register-link {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(113, 113, 130, 1);
+  text-align: center; /* keep it centered below the button */
+  margin-top: 15px;
+}
+
+.register-link a {
+  text-decoration: none;
+  color: rgba(3, 2, 19, 1);
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* subtle sliding + underline animation */
+.register-link a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1.5px;
+  background-color: rgba(251, 44, 54, 1);
+  transition: width 0.3s ease;
+}
+
+.register-link a:hover {
+  color: rgba(251, 44, 54, 1);
+  transform: translateX(5px);
+}
+
+.register-link a:hover::after {
+  width: 100%;
+}
+
+
+input:focus {
+  border-color: rgba(251, 44, 54, 1);
+  background: #fff;
+}
+
+/* ====== BUTTON ====== */
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(251, 44, 54, 1);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 5px;
+}
+
+
+
+button:hover {
+  background-color: rgba(200, 30, 40, 1);
+}
+
+/* ====== LINKS ====== */
+.small-text {
+  font-size: 13px;
+  color: #333;
+  margin-top: 10px;
+
+}
+
+.small-text a {
+  color: rgba(251, 44, 54, 1);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.small-text a:hover {
+  color: rgba(251, 44, 54, 0.4);
+}
+
+
+
+/* ====== MESSAGES ====== */
+.message {
+  color: red;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+/* ====== ANIMATION ====== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 30px;
+  }
+}

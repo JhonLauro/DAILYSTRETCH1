@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wellness Library | DailyStretch</title>
+  <link rel="stylesheet" href="{% static 'dailystretch_app/css/segments/library.css' %}">
+  <link rel="icon" href="{% static 'dailystretch_app/images/logo.png' %}" type="image/png">
+</head>
+<body>
+  <main class="library-main">
+    <h2>Wellness Library</h2>
+    <p class="library-desc">Explore our collection of 12 guided wellness routines</p>
+    <div class="library-filters">
+      <div>
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="">All Categories</option>
+          <option value="stretch">Stretch</option>
+          <option value="breathing">Breathing</option>
+          <option value="eye-care">Eye Care</option>
+          <option value="meditation">Meditation</option>
+        </select>
+      </div>
+      <div>
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty" name="difficulty">
+          <option value="">All Levels</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+    </div>
+    <div class="library-grid" id="libraryGrid"></div>
+    <div id="modalBg" class="modal-bg" style="display:none;">
+      <div class="modal">
+        <div id="modalContent"></div>
+        <button id="modalStartBtn" class="routine-btn">Start Now</button>
+        <button id="modalStopBtn" class="routine-btn" style="display:none;">Stop</button>
+        <div id="timerArea" style="display:none;">
+          <h3 id="routineTitle"></h3>
+          <div id="timerDisplay" class="timer-display"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="{% static 'dailystretch_app/js/segments/library.js' %}"></script>
+</body>
+</html>

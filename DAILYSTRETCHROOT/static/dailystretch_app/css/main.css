@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: "Arimo", sans-serif;
+  background: rgba(255, 255, 255, 1);
+  margin: 0;
+  color: #1e1e1e;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 1);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #eaeaea;
+  height: 30px;
+}
+
+.logo {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-left: 5vh;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+.logo span{
+  font-size: 20px;
+  color: rgba(10, 10, 10, 1);
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+
+.tab-islands {
+  background-color: rgba(236, 236, 240, 1);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between; /* tabs spread evenly */
+  align-items: center;           /* vertical center */
+  width: 90%;                     /* fixed width as requested */
+  max-width: 90%;              /* optional max width */
+  height: 50px;                  /* adjust as needed */
+  margin: 1.5rem auto;
+  padding: 5px;                  /* padding inside island */
+  box-sizing: border-box;
+}
+
+.tab {
+  flex: 1;                       /* all tabs equal width */
+  border: 1px solid #eaeaea;
+  background-color: rgba(236, 236, 240, 1);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;           /* vertical center */
+  gap: 8px;
+  height: 100%;                  /* fill island height */
+  margin: 0 5px;                 /* small space between tabs */
+}
+
+.tab img {
+  width: 23px;
+  height: 23px;
+  margin: 0; 
+  margin-bottom: 1px;                    /* clean centering */
+}
+
+.tab p {
+  margin: 0;
+  margin-top: 4px;                     /* clean centering */
+}
+
+.tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.tab.active {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}

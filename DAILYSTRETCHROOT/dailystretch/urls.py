@@ -14,16 +14,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.urls import path
 from dailystretch_app import views
-from django.contrib import admin
-from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login_view, name='login'),
     path('', views.landing_page, name='landing'),
-    path('register/', views.register_view, name='register'),
-    path('home/', views.home_view, name='home'),
+    path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register_view, name='register'),
+
+    # Home page
+    path('main/', views.main_view, name='main'),
+
+    # Segment URLs (for dynamic loading into the "island")
+    path('main/dashboard/', views.dashboard_segment, name='dashboard'),
+    path('main/library/', views.library_segment, name='library'),
+    path('main/favorites/', views.favorites_segment, name='favorites'),
+    path('main/profile/', views.profile_segment, name='profile'),
+    path('main/settings/', views.settings_segment, name='settings'),
 ]

@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyStretch Dashboard</title>
+  <link rel="stylesheet" href="{% static 'dailystretch_app/css/main.css' %}">
+  
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="{% static 'dailystretch_app/images/logo.png' %}" alt="Logo">
+      <span>DailyStretch</span>
+    </div>
+  </header>
+
+  <!-- Segment Selector (Islands) -->
+  <div class="tab-islands">
+    <button class="tab active" data-page="{% url 'dashboard' %}"><img src="{% static 'dailystretch_app/images/main/clock.png' %}" alt="icon"><p>Dashboard</p></button>
+    <button class="tab" data-page="{% url 'library' %}"><img src="{% static 'dailystretch_app/images/main/book.png' %}" alt="icon"><p>Library</p></button>
+    <button class="tab" data-page="{% url 'favorites' %}"> <img src="{% static 'dailystretch_app/images/main/star.png' %}" alt="icon"><p>Favorites</p></button>
+    <button class="tab" data-page="{% url 'profile' %}"> <img src="{% static 'dailystretch_app/images/main/profile.png' %}" alt="icon"><p>Profile</p></button>
+    <button class="tab" data-page="{% url 'settings' %}"> <img src="{% static 'dailystretch_app/images/main/settings.png' %}" alt="icon"><p>Settings</p></button>
+  </div>
+
+  <!-- Dynamic Content Area -->
+  <div id="content-area"></div>
+<script src="{% static 'dailystretch_app/js/main.js' %}" defer></script>
+</body>
+</html>

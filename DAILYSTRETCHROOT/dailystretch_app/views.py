@@ -1,40 +1,41 @@
+import re
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-# Registrations
 
-
+# ====== Registration ======
 def register_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
 
         errors = {}
 
+        # Username/email checks
         if User.objects.filter(username=username).exists():
             errors['username'] = 'Username already exists!'
-
         if User.objects.filter(email=email).exists():
             errors['email'] = 'Email already in use!'
 
+        # Password validation
         if password != confirm_password:
             errors['password'] = 'Passwords do not match!'
-
-        if len(password) < 8:
+        elif len(password) < 8:
             errors['password'] = 'Password must be at least 8 characters.'
-
-        import re
-        if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
+        elif not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
             errors['password'] = 'Password must contain at least one letter and one number.'
 
         if errors:
-            return render(request, 'dailystretch_app/register.html', {'errors': errors, 'username': username, 'email': email})
+            # Pass previously entered values to template
+            context = {'errors': errors, 'username': username, 'email': email}
+            return render(request, 'dailystretch_app/register.html', context)
 
+        # Create new user
         user = User.objects.create_user(
             username=username, email=email, password=password)
         user.save()
@@ -45,39 +46,61 @@ def register_view(request):
     return render(request, 'dailystretch_app/register.html')
 
 
-# Landing
-
-
+# ====== Landing Page ======
 def landing_page(request):
     return render(request, 'dailystretch_app/landing.html')
 
 
-# Login
-
-
+# ====== Login ======
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('home')
+            return redirect('main')
         else:
             messages.error(request, 'Invalid credentials!')
             return redirect('login')
+
     return render(request, 'dailystretch_app/login.html')
 
-# Logout
 
-
+# ====== Logout ======
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-# Home page (after login)
+
+# ====== Home Page (Navbar + Island) ======
+@login_required(login_url='login')
+def main_view(request):
+    return render(request, 'dailystretch_app/main.html')
+
+
+# ====== Segment Views ======
+@login_required(login_url='login')
+def dashboard_segment(request):
+    return render(request, 'segments/dashboard.html')
 
 
 @login_required(login_url='login')
-def home_view(request):
-    return render(request, 'dailystretch_app/home.html')
+def library_segment(request):
+    return render(request, 'segments/library.html')
+
+
+@login_required(login_url='login')
+def favorites_segment(request):
+    return render(request, 'segments/favorites.html')
+
+
+@login_required(login_url='login')
+def profile_segment(request):
+    return render(request, 'segments/profile.html')
+
+
+@login_required(login_url='login')
+def settings_segment(request):
+    return render(request, 'segments/settings.html')

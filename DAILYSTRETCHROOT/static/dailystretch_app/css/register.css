@@ -152,7 +152,7 @@ form input:focus {
   bottom: -2px;
   width: 0;
   height: 1.5px;
-  background-color: rgba(251, 44, 54, 1); /* matches your red hover */
+  background-color: rgba(251, 44, 54, 1); 
   transition: width 0.3s ease;
 }
 

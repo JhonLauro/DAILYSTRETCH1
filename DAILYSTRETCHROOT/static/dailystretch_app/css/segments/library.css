@@ -1,42 +1,64 @@
 body {
-  background: #fafafb;
+  font-family: 'Arimo', sans-serif;
+  background: rgba(255, 255, 255, 1);
   margin: 0;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
+  color: #1e1e1e;
+  align-items: center;
+  width: 100%;
+  max-width: 120%;
 }
 .library-main {
-  max-width: 1040px;
-  margin: 32px auto 32px auto;
-  padding: 0 10px;
+  padding: 2rem;
+  width: 90%;
+  margin-left: 50px;
+}
+.library-main h2{
+  margin-top: -1vh;
+  font-weight: 400;
 }
 .library-desc {
-  color: #666;
-  margin-bottom: 18px;
+  color: rgba(113, 113, 130, 1);
+  margin-top: -10px;
+  font-weight: 400;
 }
 .library-filters {
-  margin: 14px 0 16px 0;
+  
+  margin: 30px 0 16px 0;
   display: flex;
   gap: 32px;
   align-items: center;
 }
+.library-filters div {
+  display: flex;
+  flex-direction: column;
+}
 .library-filters label,
 .library-filters input[type="checkbox"] {
-  font-size: .99em;
-  color: #444;
-  font-weight: 500;
-  margin-left: 8px;
+ 
+  font-weight: 400;
+  margin-bottom: 10px;
+ 
 }
 .library-filters select {
+  color: rgba(113, 113, 130, 1);
   padding: 6px 15px;
   border: 1px solid #ddd;
   border-radius: 7px;
   font-size: 1em;
   margin-top: 4px;
+  width: 90vh;
 }
 .library-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  /* Force 3 cards per row on wide screens */
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 21px;
+}
+
+/* Medium screens: 2 columns */
+@media (max-width: 900px) {
+  .library-grid { grid-template-columns: repeat(2, 1fr); }
 }
 .lib-card {
   background: #fff;
@@ -47,6 +69,7 @@ body {
   flex-direction: column;
   min-height: 220px;
   padding: 22px 20px 22px 20px;
+  
 }
 .lib-card-header {
   font-size: 1.07em;

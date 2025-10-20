@@ -4,7 +4,7 @@ body {
   margin: 0;
   color: #1e1e1e;
   align-items: center;
-  
+  font-weight: 400;
 }
 
 
@@ -22,7 +22,7 @@ body {
 }
 
 .welcome p {
-  color: #666;
+  color: rgba(113, 113, 130, 1);
   margin-top: 0.3rem;
   font-weight: 400;
 }

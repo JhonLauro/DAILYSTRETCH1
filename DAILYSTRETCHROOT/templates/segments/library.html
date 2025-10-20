@@ -45,6 +45,25 @@
       </div>
     </div>
   </main>
+  <!-- Optional: supabase client for direct DB fetches. Set SUPABASE_URL and SUPABASE_ANON_KEY in your template context if you want client-side Supabase access -->
+  {% if SUPABASE_URL and SUPABASE_ANON_KEY %}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    window.SUPABASE_URL = "{{ SUPABASE_URL }}";
+    window.SUPABASE_ANON_KEY = "{{ SUPABASE_ANON_KEY }}";
+  </script>
+  {% endif %}
+  {% if routines_json %}
+  <script id="init-routines" type="application/json">
+    {{ routines_json|safe }}
+  </script>
+  <script>
+    try {
+      const raw = document.getElementById('init-routines').textContent || '[]';
+      window.INIT_ROUTINES = JSON.parse(raw);
+    } catch (e) { window.INIT_ROUTINES = []; }
+  </script>
+  {% endif %}
   <script src="{% static 'dailystretch_app/js/segments/library.js' %}"></script>
 </body>
 </html>

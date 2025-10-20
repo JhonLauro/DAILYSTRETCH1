@@ -1,182 +1,245 @@
-const routines = [
-  {
-    title: "Desk Stretches",
-    desc: "Quick stretches to relieve tension from sitting",
-    category: "stretch", difficulty: "beginner", duration: "5 min",
-    instructions: "Sit upright. Feet flat. Lift arms overhead. Stretch side to side, hold for 20 seconds each. Roll shoulders back three times. Interlace fingers behind, open chest and hold for 30 seconds. Repeat as needed."
-  },
-  {
-    title: "Deep Breathing Exercise",
-    desc: "Calm your mind and reduce stress with controlled breathing",
-    category: "breathing", difficulty: "beginner", duration: "3 min",
-    instructions: "Sit comfortably. Breathe in through your nose for 4 seconds, hold for 4 seconds, exhale through your mouth for 4 seconds, hold for 4 seconds. Repeat this cycle."
-  },
-  {
-    title: "20-20-20 Eye Rest",
-    desc: "Reduce eye strain from screen time",
-    category: "eye-care", difficulty: "advanced", duration: "20 min",
-    instructions: "Look at something 20 feet away for 20 seconds every 20 minutes. Blink slowly ten times to refresh eyes."
-  },
-  {
-    title: "Standing Full Body Stretch",
-    desc: "Energizing stretch routine for your whole body",
-    category: "stretch", difficulty: "beginner", duration: "7 min",
-    instructions: "Stand upright, feet hip-width apart. Reach arms to sky, stretch upwards. Lean gently left and right. Touch toes, hold 15 seconds. Roll up slowly. Repeat as needed."
-  },
-  {
-    title: "Mindful Meditation",
-    desc: "Short meditation to reset your mind",
-    category: "meditation", difficulty: "beginner", duration: "5 min",
-    instructions: "Sit comfortably, close your eyes. Breathe slowly and deeply. Focus on your breath. When thoughts appear, let them pass. Continue quietly."
-  },
-  {
-    title: "Wrist and Hand Relief",
-    desc: "Stretches for hands and wrists to prevent strain",
-    category: "stretch", difficulty: "beginner", duration: "4 min",
-    instructions: "Extend one arm forward, palm up. Gently pull fingers back with other hand. Switch hands after 20 seconds. Make a loose fist, roll wrists clockwise and counterclockwise."
-  },
-  {
-    title: "Box Breathing",
-    desc: "Advanced breathing technique for focus and calm",
-    category: "breathing", difficulty: "intermediate", duration: "4 min",
-    instructions: "Sit upright, shoulders relaxed. Inhale for 4 seconds, hold for 4 seconds, exhale for 4 seconds, hold for 4 seconds. Repeat 8 cycles."
-  },
-  {
-    title: "Hip and Lower Back Release",
-    desc: "Gentle stretches for lower body relief",
-    category: "stretch", difficulty: "intermediate", duration: "6 min",
-    instructions: "Lie on back, hug knees in toward chest. Hold for 30 seconds. Cross right ankle over left knee, pull left thigh toward you. Switch sides after 30 seconds."
-  },
-  {
-    title: "Progressive Muscle Relaxation",
-    desc: "Systematic tension and release for deep relaxation",
-    category: "meditation", difficulty: "intermediate", duration: "8 min",
-    instructions: "Sit or lie down. Tense muscle groups gently (feet, calves, thighs, hands, arms, face). Hold 5 seconds, then release. Work through all groups from feet to head."
-  },
-  {
-    title: "Energizing Morning Routine",
-    desc: "Wake up your body and mind for the day ahead",
-    category: "stretch", difficulty: "intermediate", duration: "10 min",
-    instructions: "Stand, reach arms and legs out. Gentle jumping jacks and arm circles. Deep breaths in, stretching side to side. Finish with forward bend for 30 seconds."
-  },
-  {
-    title: "Computer Vision Syndrome Relief",
-    desc: "Comprehensive eye exercises for screen workers",
-    category: "eye-care", difficulty: "intermediate", duration: "5 min",
-    instructions: "Blink quickly for 10 seconds. Look left, right, up, down for 15 seconds each. Focus near and far objects for 30 seconds."
-  },
-  {
-    title: "Posture Reset",
-    desc: "Correct your posture and align your spine",
-    category: "stretch", difficulty: "advanced", duration: "8 min",
-    instructions: "Sit tall, shoulders relaxed. Pull chin backwards slightly. Hold arms out, rotate palms up and down. Stretch neck side to side."
-  }
-];
+// Library fragment script
+// Priority for data sources:
+// 1) window.INIT_ROUTINES (server-injected JSON)
+// 2) /api/routines/ (session-authenticated Django endpoint)
+// 3) Supabase client (if SUPABASE_URL and SUPABASE_ANON_KEY are provided)
 
-let timerInterval = null;
+let libraryTimerInterval = null;
 
 function prettyCategory(cat) {
-  if (cat === "eye-care") return "Eye Care";
+  if (!cat) return '';
+  if (cat === 'eye-care') return 'Eye Care';
   return cat.charAt(0).toUpperCase() + cat.slice(1);
 }
+
 function makeTags(r) {
   let tags = '';
   tags += `<span class="lib-tag blue">${prettyCategory(r.category)}</span>`;
-  if (r.difficulty === "beginner") tags += `<span class="lib-tag green">Beginner</span>`;
-  else if (r.difficulty === "intermediate") tags += `<span class="lib-tag orange">Intermediate</span>`;
-  else if (r.difficulty === "advanced") tags += `<span class="lib-tag red">Advanced</span>`;
-  tags += `<span class="lib-tag gray">${r.duration}</span>`;
+  if (r.difficulty === 'beginner') tags += `<span class="lib-tag green">Beginner</span>`;
+  else if (r.difficulty === 'intermediate') tags += `<span class="lib-tag orange">Intermediate</span>`;
+  else if (r.difficulty === 'advanced') tags += `<span class="lib-tag red">Advanced</span>`;
+  const dur = r.duration_text || (r.duration_minutes ? String(r.duration_minutes) + ' min' : (r.duration || ''));
+  if (dur) tags += `<span class="lib-tag gray">${dur}</span>`;
   return tags;
 }
+
 function durationSeconds(dur) {
-  const mins = parseInt(dur);
-  return mins * 60;
+  if (!dur) return 5 * 60; // default 5 minutes
+  const m = parseInt(String(dur).replace(/[^0-9]/g, ''), 10);
+  return (isNaN(m) ? 5 : m) * 60;
 }
 
-function renderRoutines() {
-  const cat = document.getElementById('category').value;
-  const diff = document.getElementById('difficulty').value;
-  const favs = JSON.parse(localStorage.getItem('favRoutines') || '[]');
-  let grid = document.getElementById('libraryGrid');
-  grid.innerHTML = '';
-  routines.forEach((r, idx) => {
-    if ((!cat || r.category === cat) && (!diff || r.difficulty === diff)) {
-      const isFav = favs.includes(idx);
-      grid.innerHTML += `
-        <div class="lib-card" data-category="${r.category}" data-difficulty="${r.difficulty}">
-          <div class="lib-card-header">
-            <strong>${r.title}</strong>
-            <span class="star" onclick="toggleFavorite(${idx}, this)" style="color:${isFav ? '#e7b900' : '#c6c6c6'}">&#9733;</span>
-          </div>
-          <p class="lib-desc">${r.desc}</p>
-          <div class="lib-tags">${makeTags(r)}</div>
-          <button class="routine-btn" onclick="openRoutine(${idx})">
-            <span style="margin-right:7px;color:#61cfff">&#9654;</span> Start Routine
-          </button>
-        </div>`;
+window.initLibrary = window.initLibrary || function initLibrary(root) {
+  try {
+    if (!root || !(root instanceof Element)) root = document;
+    console.debug('initLibrary called', root);
+    try { root.__library_inited = true; } catch (e) { /* ignore */ }
+
+    async function fetchApiRoutines() {
+      try {
+        const resp = await fetch('/api/routines/', { credentials: 'same-origin' });
+        console.debug('library: /api/routines/ status', resp.status, resp.headers.get('content-type'));
+        if (!resp.ok) return null;
+        const ct = (resp.headers.get('content-type') || '').toLowerCase();
+        if (ct.includes('application/json')) return await resp.json();
+        const txt = await resp.text();
+        try { return JSON.parse(txt); } catch (e) { console.warn('library: /api/routines/ returned non-json', txt); return null; }
+      } catch (e) { console.warn('library: error fetching /api/routines/', e); return null; }
     }
-  });
-}
-window.toggleFavorite = function(idx, star) {
+
+    async function fetchSupabaseRoutines() {
+      if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) return null;
+      try {
+        const lib = window.supabaseJs || window.supabase || (typeof createClient === 'function' ? { createClient } : null);
+        if (!lib) { console.warn('library: supabase client not found on window'); return null; }
+        const client = lib.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        const { data, error } = await client.from('routines').select('id, title, description, category, difficulty, duration_text, duration_minutes, instructions').order('id', { ascending: true });
+        if (error) { console.warn('library: supabase error', error); return null; }
+        return data || null;
+      } catch (e) { console.warn('library: supabase fetch failed', e); return null; }
+    }
+
+    async function renderRoutines() {
+      const catEl = root.querySelector('#category');
+      const diffEl = root.querySelector('#difficulty');
+      const cat = catEl ? catEl.value : '';
+      const diff = diffEl ? diffEl.value : '';
   let favs = JSON.parse(localStorage.getItem('favRoutines') || '[]');
-  if (favs.includes(idx)) favs = favs.filter(i => i !== idx);
-  else favs.push(idx);
-  localStorage.setItem('favRoutines', JSON.stringify(favs));
-  renderRoutines();
-};
-window.openRoutine = function(idx) {
-  if (timerInterval) clearInterval(timerInterval);
-  const r = routines[idx];
-  document.getElementById('modalBg').style.display = 'flex';
-  document.getElementById('modalContent').innerHTML =
-    `<strong>${r.title}</strong><br/><br/>
-    <span>${r.instructions}</span>`;
-  document.getElementById('routineTitle').innerText = r.title;
-  document.getElementById('timerArea').style.display = 'none';
-  document.getElementById('modalStartBtn').style.display = '';
-  document.getElementById('modalStopBtn').style.display = 'none';
-  document.getElementById('modalStartBtn').onclick = function() {
-    startTimer(r.duration, r.title);
-  };
-  document.getElementById('modalStopBtn').onclick = function() {
-    closeModal();
-  };
-  document.getElementById('modalBg').onclick = function(e) {
-    if (e.target === document.getElementById('modalBg')) closeModal();
-  };
-};
-function closeModal() {
-  document.getElementById('modalBg').style.display = 'none';
-  document.getElementById('timerArea').style.display = 'none';
-  document.getElementById('modalStartBtn').style.display = '';
-  document.getElementById('modalStopBtn').style.display = 'none';
-  document.getElementById('timerDisplay').innerText = '';
-  if (timerInterval) clearInterval(timerInterval);
-}
-function startTimer(duration, title) {
-  document.getElementById('modalStartBtn').style.display = 'none';
-  document.getElementById('modalStopBtn').style.display = '';
-  document.getElementById('timerArea').style.display = '';
-  document.getElementById('routineTitle').innerText = title;
-  let seconds = durationSeconds(duration);
-  updateTimer(seconds);
+  if (!Array.isArray(favs)) favs = [];
+  // normalize stored fav ids to numbers to avoid type/idx confusion
+  favs = favs.map(n => Number(n));
+      const grid = root.querySelector('#libraryGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
 
-  timerInterval = setInterval(function() {
-    seconds--;
-    updateTimer(seconds);
-    if (seconds <= 0) {
-      clearInterval(timerInterval);
-      document.getElementById('timerDisplay').innerText = "Routine Complete!";
-      setTimeout(closeModal, 1500);
+      let items = null;
+      if (window.INIT_ROUTINES && Array.isArray(window.INIT_ROUTINES) && window.INIT_ROUTINES.length) {
+        items = window.INIT_ROUTINES;
+        console.debug('library: using window.INIT_ROUTINES with', items.length, 'items');
+      }
+
+      if (!items) {
+        const apiItems = await fetchApiRoutines();
+        if (Array.isArray(apiItems) && apiItems.length) items = apiItems;
+      }
+
+      if (!items) {
+        const supaItems = await fetchSupabaseRoutines();
+        if (Array.isArray(supaItems) && supaItems.length) items = supaItems;
+      }
+
+      if (!Array.isArray(items) || items.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'lib-empty';
+        empty.innerHTML = '<div style="text-align:center;padding:40px;color:#666"><div style="font-size:20px;margin-bottom:8px">No routines found</div><div style="font-size:13px">Add routines via the admin, the /api/routines/ endpoint, or connect Supabase and add rows to your `routines` table.</div></div>';
+        grid.appendChild(empty);
+        try { root.__library_items = []; } catch (e) { /* ignore */ }
+        return;
+      }
+
+      // normalize items and save to root
+      const normalized = items.map((r, i) => ({
+        id: r.id ?? (r.pk ?? i),
+        title: r.title ?? r.name ?? ('Routine ' + (i+1)),
+        description: r.description ?? r.desc ?? '',
+        category: r.category ?? '',
+        difficulty: r.difficulty ?? '',
+        duration_text: r.duration_text ?? r.duration ?? (r.duration_minutes ? String(r.duration_minutes) + ' min' : ''),
+        duration_minutes: r.duration_minutes ?? (r.duration ? parseInt(String(r.duration).replace(/[^0-9]/g,''),10) : null),
+        instructions: r.instructions ?? ''
+      }));
+
+      try { root.__library_items = normalized; } catch (e) { /* ignore */ }
+
+      normalized.forEach((r, idx) => {
+        const catMatch = !cat || r.category === cat;
+        const diffMatch = !diff || r.difficulty === diff;
+        if (!catMatch || !diffMatch) return;
+  const isFav = favs.includes(Number(r.id));
+        const card = document.createElement('div');
+        card.className = 'lib-card';
+        card.setAttribute('data-category', r.category || '');
+        card.setAttribute('data-difficulty', r.difficulty || '');
+        card.innerHTML = `<div class="lib-card-header"><strong>${r.title}</strong><span class="star" data-idx="${r.id}" style="color:${isFav ? '#e7b900' : '#c6c6c6'}">★</span></div><p class="lib-desc">${r.description || ''}</p><div class="lib-tags">${makeTags(r)}</div><button class="routine-btn" data-idx="${r.id}"><span style="margin-right:7px;color:#61cfff">▶</span> Start Routine</button>`;
+        grid.appendChild(card);
+      });
+
+      // wire up actions
+      Array.from(grid.querySelectorAll('.star')).forEach(el => {
+        el.onclick = function(e) { e.stopPropagation(); toggleFavorite(parseInt(el.getAttribute('data-idx'),10), el); };
+      });
+      Array.from(grid.querySelectorAll('.routine-btn')).forEach(btn => {
+        btn.onclick = function() { openRoutine(parseInt(btn.getAttribute('data-idx'),10)); };
+      });
+
+      try { console.debug('renderRoutines: rendered', grid.children.length, 'cards'); } catch (e) { /* ignore */ }
     }
-  }, 1000);
-}
-function updateTimer(seconds) {
-  let min = Math.floor(seconds / 60);
-  let sec = seconds % 60;
-  if (seconds < 0) seconds = 0;
-  document.getElementById('timerDisplay').innerText = `${min}:${sec.toString().padStart(2, '0')}`;
-}
-document.getElementById('category').addEventListener('change', renderRoutines);
-document.getElementById('difficulty').addEventListener('change', renderRoutines);
-window.onload = () => renderRoutines();
+
+    window.toggleFavorite = function(idx, starEl) {
+      const itemsColl = root.__library_items || [];
+      if (!itemsColl || itemsColl.length === 0) return;
+      let favs = JSON.parse(localStorage.getItem('favRoutines') || '[]');
+      if (!Array.isArray(favs)) favs = [];
+      favs = favs.map(n => Number(n));
+      const idNum = Number(idx);
+      const wasFav = favs.includes(idNum);
+      if (wasFav) favs = favs.filter(i => i !== idNum);
+      else favs.push(idNum);
+      localStorage.setItem('favRoutines', JSON.stringify(favs));
+      // optimistic UI update: change only the clicked star color
+      try { if (starEl) starEl.style.color = wasFav ? '#c6c6c6' : '#e7b900'; } catch (e) { /* ignore */ }
+      // do not re-render entire grid here (avoids sluggishness); the change is persisted
+    };
+
+    window.openRoutine = function(idx) {
+      if (libraryTimerInterval) clearInterval(libraryTimerInterval);
+      const itemsColl = root.__library_items || [];
+      let r = null;
+      try { r = itemsColl.find(it => String(it.id) === String(idx)); } catch (e) { /* ignore */ }
+      if (!r) {
+        r = itemsColl[idx] || null;
+        if (!r) { console.warn('openRoutine: not found for idx', idx); return; }
+      }
+      const modalBg = root.querySelector('#modalBg');
+      const modalContent = root.querySelector('#modalContent');
+      const routineTitle = root.querySelector('#routineTitle');
+      const timerArea = root.querySelector('#timerArea');
+      const modalStartBtn = root.querySelector('#modalStartBtn');
+      const modalStopBtn = root.querySelector('#modalStopBtn');
+      const timerDisplay = root.querySelector('#timerDisplay');
+      if (!modalBg || !modalContent) return;
+      modalBg.style.display = 'flex';
+      modalContent.innerHTML = `<strong>${r.title}</strong><br/><br/><span>${r.instructions || r.description || ''}</span>`;
+      if (routineTitle) routineTitle.innerText = r.title;
+      if (timerArea) timerArea.style.display = 'none';
+      if (modalStartBtn) modalStartBtn.style.display = '';
+      if (modalStopBtn) modalStopBtn.style.display = 'none';
+      const durationArg = r.duration_text || (r.duration_minutes ? String(r.duration_minutes) + ' min' : '5 min');
+      if (modalStartBtn) modalStartBtn.onclick = function() { startTimer(durationArg, r.title); };
+      if (modalStopBtn) modalStopBtn.onclick = function() { closeModal(); };
+      modalBg.onclick = function(e) { if (e.target === modalBg) closeModal(); };
+    };
+
+    function closeModal() {
+      const modalBg = root.querySelector('#modalBg');
+      const timerArea = root.querySelector('#timerArea');
+      const modalStartBtn = root.querySelector('#modalStartBtn');
+      const modalStopBtn = root.querySelector('#modalStopBtn');
+      const timerDisplay = root.querySelector('#timerDisplay');
+      if (modalBg) modalBg.style.display = 'none';
+      if (timerArea) timerArea.style.display = 'none';
+      if (modalStartBtn) modalStartBtn.style.display = '';
+      if (modalStopBtn) modalStopBtn.style.display = 'none';
+      if (timerDisplay) timerDisplay.innerText = '';
+      if (libraryTimerInterval) clearInterval(libraryTimerInterval);
+    }
+
+    function startTimer(duration, title) {
+      const modalStartBtn = root.querySelector('#modalStartBtn');
+      const modalStopBtn = root.querySelector('#modalStopBtn');
+      const timerArea = root.querySelector('#timerArea');
+      const routineTitle = root.querySelector('#routineTitle');
+      const timerDisplay = root.querySelector('#timerDisplay');
+      if (modalStartBtn) modalStartBtn.style.display = 'none';
+      if (modalStopBtn) modalStopBtn.style.display = '';
+      if (timerArea) timerArea.style.display = '';
+      if (routineTitle) routineTitle.innerText = title;
+      let seconds = durationSeconds(duration);
+      updateTimerDisplay(seconds);
+      libraryTimerInterval = setInterval(function() {
+        seconds--;
+        updateTimerDisplay(seconds);
+        if (seconds <= 0) {
+          clearInterval(libraryTimerInterval);
+          if (timerDisplay) timerDisplay.innerText = 'Routine Complete!';
+          setTimeout(closeModal, 1500);
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay(seconds) {
+      const timerDisplay = root.querySelector('#timerDisplay');
+      let min = Math.floor(seconds / 60);
+      let sec = seconds % 60;
+      if (seconds < 0) seconds = 0;
+      if (timerDisplay) timerDisplay.innerText = `${min}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    const catEl = root.querySelector('#category');
+    const diffEl = root.querySelector('#difficulty');
+    if (catEl) catEl.onchange = renderRoutines;
+    if (diffEl) diffEl.onchange = renderRoutines;
+
+    // initial render
+    renderRoutines();
+
+    return { render: renderRoutines };
+  } catch (err) {
+    console.error('initLibrary failed', err);
+  }
+};
+
+// Auto-init when loaded as a full page
+try {
+  if (document.querySelector && document.querySelector('#libraryGrid')) window.initLibrary(document);
+} catch (e) { /* ignore */ }

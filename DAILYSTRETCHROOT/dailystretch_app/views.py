@@ -4,6 +4,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.conf import settings
+from .models import Routine
 
 
 # ====== Registration ======
@@ -88,7 +91,21 @@ def dashboard_segment(request):
 
 @login_required(login_url='login')
 def library_segment(request):
-    return render(request, 'segments/library.html')
+    # Pass serialized routines into the template so the frontend can render DB data
+    try:
+        qs = Routine.objects.all().values('id', 'title', 'description', 'category',
+                                          'difficulty', 'duration_text', 'duration_minutes', 'instructions')
+        import json
+        routines_json = json.dumps(list(qs))
+    except Exception:
+        routines_json = '[]'
+    # Optionally include Supabase keys from settings so the client can fetch directly
+    context = {
+        'routines_json': routines_json,
+        'SUPABASE_URL': getattr(settings, 'SUPABASE_URL', ''),
+        'SUPABASE_ANON_KEY': getattr(settings, 'SUPABASE_ANON_KEY', ''),
+    }
+    return render(request, 'segments/library.html', context)
 
 
 @login_required(login_url='login')
@@ -104,3 +121,11 @@ def profile_segment(request):
 @login_required(login_url='login')
 def settings_segment(request):
     return render(request, 'segments/settings.html')
+
+
+@login_required(login_url='login')
+def api_routines(request):
+    # Return a simple JSON list of routines for the logged-in user to fetch
+    qs = Routine.objects.all().values('id', 'title', 'description', 'category',
+                                      'difficulty', 'duration_text', 'duration_minutes', 'instructions')
+    return JsonResponse(list(qs), safe=False)

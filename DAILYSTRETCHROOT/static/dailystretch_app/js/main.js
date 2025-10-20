@@ -39,7 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const initName = 'init' + last.charAt(0).toUpperCase() + last.slice(1);
           if (typeof window[initName] === 'function') {
             try {
-              try { delete contentArea.__dashboard_inited; } catch (e) {}
+              // clear any fragment-specific init flag on the content area so
+              // the fragment's idempotent initializer can run again when the
+              // segment is re-injected. e.g. __library_inited, __dashboard_inited
+              try {
+                const flag = '__' + last + '_inited';
+                if (contentArea && Object.prototype.hasOwnProperty.call(contentArea, flag)) {
+                  try { delete contentArea[flag]; } catch (e) { /* ignore */ }
+                }
+              } catch (e) { /* ignore */ }
               window[initName](contentArea);
             } catch (err) { console.error('Error running', initName, err); }
           }

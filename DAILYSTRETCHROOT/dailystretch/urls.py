@@ -34,4 +34,6 @@ urlpatterns = [
     path('main/favorites/', views.favorites_segment, name='favorites'),
     path('main/profile/', views.profile_segment, name='profile'),
     path('main/settings/', views.settings_segment, name='settings'),
+    # API
+    path('api/routines/', views.api_routines, name='api_routines'),
 ]

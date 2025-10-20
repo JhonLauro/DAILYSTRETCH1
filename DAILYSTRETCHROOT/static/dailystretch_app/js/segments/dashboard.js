@@ -10,7 +10,7 @@ window.initDashboard = window.initDashboard || function initDashboard(root) {
     if (root.__dashboard_inited) return;
     root.__dashboard_inited = true;
 
-
+    const reminder_alarm = new Audio('/static/dailystretch_app/audio/reminderalarm.mp3');
     const q = (sel) => root.querySelector(sel);
     const alarm = new Audio('/static/dailystretch_app/audio/alarm.mp3');
     const timeDisplay = q('#time-display');
@@ -88,11 +88,11 @@ window.initDashboard = window.initDashboard || function initDashboard(root) {
       reminderTimerId = setInterval(() => {
         if (reminders.stretchEnabled) {
           try { new Notification('Stretch reminder', { body: 'Time to stretch!' }); } catch (e) { /*ignore*/ }
-          try { alarm.play(); } catch (e) { /*ignore*/ }
+          try { reminder_alarm.play(); } catch (e) { /*ignore*/ }
         }
         if (reminders.hydrationEnabled) {
           try { new Notification('Hydration reminder', { body: 'Time to drink water!' }); } catch (e) { /*ignore*/ }
-          try { alarm.play(); } catch (e) { /*ignore*/ }
+          try { reminder_alarm.play(); } catch (e) { /*ignore*/ }
         }
       }, reminders.intervalMinutes * 60 * 1000);
     }
@@ -129,17 +129,55 @@ window.initDashboard = window.initDashboard || function initDashboard(root) {
     function showToast(text, duration = 1500) {
       try {
         let toast = document.getElementById('ds-toast');
+        const created = !toast;
         if (!toast) {
           toast = document.createElement('div');
           toast.id = 'ds-toast';
+          // Inline fallback styles so the toast won't appear as a plain text node
+          // in the document flow if the CSS file hasn't loaded yet.
+          toast.style.cssText = [
+            'position:fixed',
+            'bottom:20px',
+            'right:20px',
+            'background:#222',
+            'color:#fff',
+            'padding:10px 14px',
+            'border-radius:6px',
+            'box-shadow:0 6px 18px rgba(0,0,0,0.25)',
+            'z-index:10000',
+            'opacity:0',
+            'transition:opacity 200ms ease, transform 200ms ease',
+            'transform:translateY(8px)',
+            'pointer-events:none',
+            'max-width:80vw',
+            'word-break:break-word'
+          ].join(';');
           document.body.appendChild(toast);
         }
+        // Set text content (replacing any previous message)
         toast.textContent = text;
-        // trigger CSS animation
-        toast.classList.add('show');
-        // remove after duration
+
+        // Force a style/layout flush then show
+        // (ensures transition runs even when element was just created)
+        /* eslint-disable no-unused-expressions */
+        toast.offsetHeight;
+        /* eslint-enable no-unused-expressions */
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+
+        // After duration, hide and remove the element to avoid stray nodes
         setTimeout(() => {
-          if (toast) toast.classList.remove('show');
+          try {
+            if (!toast) return;
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8px)';
+            // remove after transition completes
+            setTimeout(() => {
+              try {
+                if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+              } catch (e) { /* ignore */ }
+            }, 250);
+          } catch (e) { /* ignore */ }
         }, duration);
       } catch (e) { /* ignore */ }
     }
@@ -236,8 +274,16 @@ window.initDashboard = window.initDashboard || function initDashboard(root) {
           reminders.intervalMinutes = minutes;
           renderReminders();
           startReminders();
-          // quick UI feedback
-          showToast('Reminder has been set to every ' + minutes + ' minutes');
+          console.log('dashboard: interval button clicked ->', minutes, 'min; reminders:', reminders);
+          // compose descriptive message based on which reminders are enabled
+          const enabled = [];
+          if (reminders.stretchEnabled) enabled.push('Stretch');
+          if (reminders.hydrationEnabled) enabled.push('Hydration');
+          let msg = '';
+          if (enabled.length === 2) msg = `Stretch & Hydration reminders set for ${minutes} min`;
+          else if (enabled.length === 1) msg = `${enabled[0]} reminder set for ${minutes} min`;
+          else msg = `Reminder interval set for ${minutes} min`;
+          showToast(msg);
         }
       });
     });
@@ -246,11 +292,13 @@ window.initDashboard = window.initDashboard || function initDashboard(root) {
       reminders.stretchEnabled = e.target.checked;
       renderReminders();
       startReminders();
+      showToast(reminders.stretchEnabled ? 'Stretch reminders enabled' : 'Stretch reminders disabled');
     });
     if (hydrationToggle) hydrationToggle.addEventListener('change', (e) => {
       reminders.hydrationEnabled = e.target.checked;
       renderReminders();
       startReminders();
+      showToast(reminders.hydrationEnabled ? 'Hydration reminders enabled' : 'Hydration reminders disabled');
     });
 
   // Load persisted state and start tick if needed

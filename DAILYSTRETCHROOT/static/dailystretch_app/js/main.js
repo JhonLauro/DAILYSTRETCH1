@@ -2,6 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tab");
   const contentArea = document.getElementById("content-area");
 
+  // Global dark mode handler
+  function applyDarkModeIfEnabled() {
+    if (localStorage.getItem('dark_mode_enabled') === 'true') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+
+  // Initial apply on page load
+  applyDarkModeIfEnabled();
+
   const loadPage = async (page) => {
     try {
       const response = await fetch(page);
@@ -9,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
       contentArea.innerHTML = html;
 
       const scripts = Array.from(contentArea.querySelectorAll('script'));
-
       const loadPromises = scripts.map((oldScript) => {
         return new Promise((resolve) => {
           const newScript = document.createElement('script');
@@ -31,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await Promise.all(loadPromises);
 
+      // If the page loads an initX function, run it (e.g. for dashboard, settings, etc)
       try {
         const parts = page.split('/').filter(Boolean);
         let last = parts.pop() || '';
@@ -39,20 +51,19 @@ document.addEventListener("DOMContentLoaded", () => {
           const initName = 'init' + last.charAt(0).toUpperCase() + last.slice(1);
           if (typeof window[initName] === 'function') {
             try {
-              // clear any fragment-specific init flag on the content area so
-              // the fragment's idempotent initializer can run again when the
-              // segment is re-injected. e.g. __library_inited, __dashboard_inited
-              try {
-                const flag = '__' + last + '_inited';
-                if (contentArea && Object.prototype.hasOwnProperty.call(contentArea, flag)) {
-                  try { delete contentArea[flag]; } catch (e) { /* ignore */ }
-                }
-              } catch (e) { /* ignore */ }
+              const flag = '__' + last + '_inited';
+              if (contentArea && Object.prototype.hasOwnProperty.call(contentArea, flag)) {
+                try { delete contentArea[flag]; } catch (e) { /* ignore */ }
+              }
               window[initName](contentArea);
             } catch (err) { console.error('Error running', initName, err); }
           }
         }
       } catch (e) {}
+
+      // <<<< THIS is the important call for dark mode!
+      applyDarkModeIfEnabled();
+
     } catch (err) {
       contentArea.innerHTML = "<p>⚠️ Failed to load content.</p>";
       console.error(err);
@@ -68,4 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadPage(tab.getAttribute("data-page"));
     });
   });
+
+  // Make applyDarkModeIfEnabled globally accessible
+  window.applyDarkModeIfEnabled = applyDarkModeIfEnabled;
 });

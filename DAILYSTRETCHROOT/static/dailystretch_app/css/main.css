@@ -91,3 +91,90 @@ body {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
+
+body.dark {
+  background: #191A23 !important;
+  color: #f4f6ff !important;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark .settings-card,
+body.dark .dashboard,
+body.dark .main-content,
+body.dark .card,
+body.dark .reminders,
+body.dark .quick-stats,
+body.dark .stat,
+body.dark .tab-islands,
+body.dark .navbar {
+  background: #232337 !important;
+  color: #f4f6ff !important;
+  box-shadow: 0 4px 18px rgba(30,16,70,0.14);
+}
+
+body.dark input,
+body.dark input[type="number"],
+body.dark textarea {
+  background: #252336 !important;
+  color: #e6e2f5 !important;
+  border: 1px solid #39396a !important;
+}
+
+body.dark .section-label,
+body.dark h2,
+body.dark h3,
+body.dark h4 {
+  color: #e1d9ee !important;
+}
+
+body.dark .save-btn {
+  background: #fff !important;
+  color: #191923 !important;
+}
+body.dark .save-btn:hover {
+  background: #eee !important;
+}
+body.dark .logout-btn {
+  color: #eee !important;
+  border: 1px solid #575394 !important;
+}
+body.dark .logout-btn:hover {
+  background: #323148 !important;
+}
+
+body.dark .account-row .avatar {
+  background: #f4f4ff !important;
+  color: #232337 !important;
+}
+
+body.dark .card-section {
+  background: #232337 !important;
+  color: #d4d8ee !important;
+}
+
+body.dark .card,
+body.dark .stat,
+body.dark .reminder,
+body.dark .quick-stats {
+  background: #232337 !important;
+  color: #f4f6ff !important;
+}
+
+body.dark table {
+  background: #212132 !important;
+  color: #e1d9ee !important;
+}
+
+body.dark .tab,
+body.dark .tab.active {
+  background: #212132 !important;
+  color: #f4f6ff !important;
+}
+
+body.dark .progress-bar {
+  background: #35304a !important;
+}
+
+body.dark .progress {
+  background: #a684e4 !important;
+}

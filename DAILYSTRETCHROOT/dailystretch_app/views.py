@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
 from .models import Routine
-
+from .models import UserSettings
 
 # ====== Registration ======
 def register_view(request):
@@ -86,7 +86,11 @@ def main_view(request):
 # ====== Segment Views ======
 @login_required(login_url='login')
 def dashboard_segment(request):
-    return render(request, 'segments/dashboard.html')
+    user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+    return render(request, 'segments/dashboard.html', {
+        'study_duration': user_settings.study_duration,
+        'break_duration': user_settings.break_duration
+    })
 
 
 @login_required(login_url='login')
@@ -120,7 +124,19 @@ def profile_segment(request):
 
 @login_required(login_url='login')
 def settings_segment(request):
-    return render(request, 'segments/settings.html')
+    user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        study = request.POST.get('study_duration')
+        brk = request.POST.get('break_duration')
+        # print("Received POST:", study, brk)
+        if study:
+            user_settings.study_duration = int(study)
+        if brk:
+            user_settings.break_duration = int(brk)
+        user_settings.save()
+        # print("Saved settings:", user_settings.study_duration, user_settings.break_duration)
+        return redirect('main')   # This matches the url name for /main/dashboard/
+    return render(request, 'segments/settings.html', {'user_settings': user_settings})
 
 
 @login_required(login_url='login')
@@ -129,3 +145,5 @@ def api_routines(request):
     qs = Routine.objects.all().values('id', 'title', 'description', 'category',
                                       'difficulty', 'duration_text', 'duration_minutes', 'instructions')
     return JsonResponse(list(qs), safe=False)
+
+

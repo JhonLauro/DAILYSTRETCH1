@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Routine(models.Model):
     title = models.TextField()
@@ -16,3 +16,11 @@ class Routine(models.Model):
 
     def __str__(self):
         return self.title
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    study_duration = models.PositiveIntegerField(default=25)
+    break_duration = models.PositiveIntegerField(default=5)
+
+    def __str__(self):
+        return f"{self.user.username}'s Settings"

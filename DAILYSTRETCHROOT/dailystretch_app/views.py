@@ -6,8 +6,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
-from .models import Routine
-from .models import UserSettings
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from .models import Routine, UserSettings, Favorite
 
 # ====== Registration ======
 def register_view(request):
@@ -114,8 +115,32 @@ def library_segment(request):
 
 @login_required(login_url='login')
 def favorites_segment(request):
-    return render(request, 'segments/favorites.html')
+    fav_ids = Favorite.objects.filter(user=request.user).values_list('routine_id', flat=True)
+    favorite_routines = Routine.objects.filter(id__in=fav_ids)
+    context = {'favorite_routines': favorite_routines}
+    return render(request, 'segments/favorites.html', context)
 
+@login_required
+@require_POST
+def favorite_toggle(request):
+    routine_id = request.POST.get("routine_id")
+    if not routine_id:
+        return JsonResponse({"ok": False, "error": "Missing ID"}, status=400)
+    try:
+        routine = Routine.objects.get(pk=routine_id)
+    except Routine.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "Invalid ID"}, status=404)
+    fav, created = Favorite.objects.get_or_create(user=request.user, routine=routine)
+    if not created:
+        fav.delete()
+        return JsonResponse({"ok": True, "favorited": False})
+    else:
+        return JsonResponse({"ok": True, "favorited": True})
+
+@login_required
+def favorite_list(request):
+    favorites = Favorite.objects.filter(user=request.user).values_list('routine_id', flat=True)
+    return JsonResponse(list(favorites), safe=False)
 
 @login_required(login_url='login')
 def profile_segment(request):

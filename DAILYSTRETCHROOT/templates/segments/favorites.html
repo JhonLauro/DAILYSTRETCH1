@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Favorites | DailyStretch</title>
+  <link rel="stylesheet" href="{% static 'dailystretch_app/css/segments/favorites.css' %}">
+</head>
+<body>
+  <main class="library-main">
+    <h2>My Favorites</h2>
+    <p class="library-desc">Your starred routines appear here.</p>
+    <div class="library-grid" id="favoritesGrid">
+      {% for routine in favorite_routines %}
+        <div class="lib-card">
+          <div class="lib-card-header">
+            <strong>{{ routine.title }}</strong>
+            <span class="star active" style="color:#e7b900;">★</span>
+          </div>
+          <p class="lib-desc">{{ routine.description }}</p>
+          <div class="lib-tags">
+            {% if routine.category %}<span class="lib-tag blue">{{ routine.category|title }}</span>{% endif %}
+            {% if routine.difficulty %}<span class="lib-tag {% if routine.difficulty == 'beginner' %}green{% elif routine.difficulty == 'intermediate' %}orange{% elif routine.difficulty == 'advanced' %}red{% endif %}">{{ routine.difficulty|title }}</span>{% endif %}
+            {% if routine.duration_text %}<span class="lib-tag gray">{{ routine.duration_text }}</span>{% endif %}
+          </div>
+          <button class="routine-btn" onclick="openRoutineModal('{{ routine.title|escapejs }}', '{{ routine.instructions|escapejs|default:routine.description|escapejs }}', '{{ routine.duration_text|default:"5 min" }}')">
+            <span style="margin-right:7px;color:#61cfff">▶</span> Start Routine
+          </button>
+        </div>
+      {% empty %}
+        <div class="lib-empty">You have no favorited routines yet.</div>
+      {% endfor %}
+    </div>
+    <div id="modalBg" class="modal-bg" style="display:none;">
+      <div class="modal">
+        <div id="modalContent"></div>
+        <button id="modalStartBtn" class="routine-btn">Start Now</button>
+        <button id="modalStopBtn" class="routine-btn" style="display:none;">Stop</button>
+        <div id="timerArea" style="display:none;">
+          <h3 id="routineTitle"></h3>
+          <div id="timerDisplay" class="timer-display"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="{% static 'dailystretch_app/js/segments/favorites.js' %}"></script>
+</body>
+</html>

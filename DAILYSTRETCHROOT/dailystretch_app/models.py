@@ -24,3 +24,10 @@ class UserSettings(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Settings"
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    routine = models.ForeignKey('Routine', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'routine')

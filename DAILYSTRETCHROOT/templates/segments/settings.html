@@ -1,69 +1,58 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Account Settings - DailyStretch</title>
-    <link rel="stylesheet" href="{% static 'dailystretch_app/css/segments/settings.css' %}" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account Settings - DailyStretch</title>
+  <link rel="stylesheet" href="{% static 'dailystretch_app/css/segments/settings.css' %}" />
 </head>
-
 <body>
-    <div class="settings-container">
-        <div class="settings-card">
+  <div class="settings-container">
+    <div class="settings-card">
 
-            <h2>Account Settings</h2>
-            <p>Manage your account and preferences</p>
+      <h2>Account Settings</h2>
+      <p>Manage your account and preferences</p>
 
-            <div class="account-row">
-                <span class="avatar">&#128100;</span>
-                <div class="user-info">
-                    <span>{{ request.user.get_full_name|default:request.user.username }}</span>
-                    <small>{{ request.user.email }}</small>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="section-label">Appearance</div>
-            <div class="card-section" id="dark-container"
-                style="display:flex;align-items:center;justify-content:space-between;">
-                <div>
-                    <span class="dark-mode-label" id="theme-label" style="font-weight:600;">Dark Mode</span><br>
-                    <span style="font-weight:400;font-size:0.95em;color:#b1b2b7;">Switch between light and dark
-                        theme</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="dark-mode-toggle" />
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="section-label">Timer Settings</div>
-            <form method="post" action="{% url 'settings' %}">
-                {% csrf_token %}
-                <div class="card-section">
-                    <label for="study_duration" style="margin-right:10px;">Study Duration (minutes)</label>
-                    <input type="number" id="study_duration" name="study_duration"
-                        value="{{ user_settings.study_duration }}" min="1" max="180" />
-                </div>
-                <div class="card-section">
-                    <label for="break_duration" style="margin-right:10px;">Break Duration (minutes)</label>
-                    <input type="number" id="break_duration" name="break_duration"
-                        value="{{ user_settings.break_duration }}" min="1" max="60" />
-                </div>
-                <button type="submit" class="save-btn">Save Timer Settings</button>
-            </form>
-
-            <button id="logout-btn" class="logout-btn">Logout</button>
+      <div class="account-row">
+        <span class="avatar">&#128100;</span>
+        <div class="user-info">
+          <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+          <small>{{ request.user.email }}</small>
         </div>
-    </div>
-    <script src="{% static 'dailystretch_app/js/segments/settings.js' %}">
-        document.getElementById("logout-btn").addEventListener("click", () => {
-            window.location.href = "{% url 'logout' %}";
-        });
-    </script>
-</body>
+      </div>
 
+      <hr />
+
+      <div class="section-label">Appearance</div>
+      <div class="card-section" id="dark-container" style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <span class="dark-mode-label" id="theme-label" style="font-weight:600;">Dark Mode</span><br>
+          <span style="font-weight:400;font-size:0.95em;color:#b1b2b7;">Switch between light and dark theme</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="section-label">Timer Settings</div>
+      <form method="post" action="{% url 'settings' %}">
+        {% csrf_token %}
+        <div class="card-section">
+          <label for="study_duration" style="margin-right:10px;">Study Duration (minutes)</label>
+          <input type="number" id="study_duration" name="study_duration" value="{{ user_settings.study_duration }}" min="1" max="180" />
+        </div>
+        <div class="card-section">
+          <label for="break_duration" style="margin-right:10px;">Break Duration (minutes)</label>
+          <input type="number" id="break_duration" name="break_duration" value="{{ user_settings.break_duration }}" min="1" max="60" />
+        </div>
+        <button type="submit" class="save-btn">Save Timer Settings</button>
+      </form>
+
+      <button onclick="window.location.href='{% url 'logout' %}'" class="logout-btn">Logout</button>
+    </div>
+  </div>
+  <script src="{% static 'dailystretch_app/js/segments/settings.js' %}"></script>
+</body>
 </html>

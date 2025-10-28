@@ -188,3 +188,10 @@ body.dark .routine-btn:hover { background: #23234b !important; }
 body.dark .modal-bg { background: rgba(14,18,34,0.73) !important; }
 body.dark .modal { background: #272a46 !important; color: #ededed !important; }
 body.dark .timer-display { color: #65e5dc !important; }
+body.dark .modal,
+body.dark .modal * {
+  color: #ededed !important;
+}
+body.dark #modalContent {
+  color: #ededed !important;
+}

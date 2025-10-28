@@ -1,4 +1,3 @@
-// Library fragment script, Django backend favorites
 let libraryTimerInterval = null;
 
 // --- Helper Functions ---
@@ -110,7 +109,7 @@ window.initLibrary = window.initLibrary || async function initLibrary(root) {
 
       // normalize
       const normalized = routines.map((r, i) => ({
-        id: r.id ?? (r.pk ?? i),
+        id: String(r.id ?? r.pk ?? i),
         title: r.title ?? r.name ?? ('Routine ' + (i + 1)),
         description: r.description ?? r.desc ?? '',
         category: r.category ?? '',
@@ -119,6 +118,9 @@ window.initLibrary = window.initLibrary || async function initLibrary(root) {
         duration_minutes: r.duration_minutes ?? (r.duration ? parseInt(String(r.duration).replace(/[^0-9]/g, ''), 10) : null),
         instructions: r.instructions ?? ''
       }));
+
+      // Store for modal lookup:
+      root.__library_items = normalized;
 
       let count = 0;
       normalized.forEach(r => {
@@ -137,25 +139,24 @@ window.initLibrary = window.initLibrary || async function initLibrary(root) {
       grid.querySelectorAll('.star').forEach(el => {
         el.onclick = function (e) {
           e.stopPropagation();
-          toggleFavorite(parseInt(el.getAttribute('data-id')), el);
+          toggleFavorite(String(el.getAttribute('data-id')), el);
         };
       });
       grid.querySelectorAll('.routine-btn').forEach(btn => {
         btn.onclick = function () {
-          openRoutine(parseInt(btn.getAttribute('data-id')));
+          openRoutine(String(btn.getAttribute('data-id')));
         };
       });
     }
 
-    // Modal + timer routines (keep your implementation below)
+    // Modal + timer routines (Universal)
     window.openRoutine = function (idx) {
       if (libraryTimerInterval) clearInterval(libraryTimerInterval);
       const itemsColl = root.__library_items || [];
-      let r = null;
-      try { r = itemsColl.find(it => String(it.id) === String(idx)); } catch (e) { /* ignore */ }
+      let r = itemsColl.find(it => String(it.id) === String(idx));
       if (!r) {
-        r = itemsColl[idx] || null;
-        if (!r) { console.warn('openRoutine: not found for idx', idx); return; }
+        console.warn('openRoutine: not found for idx', idx);
+        return;
       }
       const modalBg = root.querySelector('#modalBg');
       const modalContent = root.querySelector('#modalContent');
@@ -235,6 +236,7 @@ window.initLibrary = window.initLibrary || async function initLibrary(root) {
   }
 };
 
+// Boot on page load:
 try {
   if (document.querySelector && document.querySelector('#libraryGrid')) window.initLibrary(document);
 } catch (e) { }

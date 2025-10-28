@@ -144,23 +144,47 @@ def favorite_list(request):
 
 @login_required(login_url='login')
 def profile_segment(request):
-    return render(request, 'segments/profile.html')
+    user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        bio = request.POST.get('bio', '')
+        avatar = request.FILES.get('avatar')
+
+        user_settings.bio = bio
+        if avatar:
+            user_settings.avatar = avatar
+        user_settings.save()
+
+        # Optional: allow editing basic user info
+        user = request.user
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect('profile')
+
+    context = {
+        'user_settings': user_settings,
+    }
+    return render(request, 'segments/profile.html', context)
 
 
 @login_required(login_url='login')
 def settings_segment(request):
     user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        study = request.POST.get('study_duration')
-        brk = request.POST.get('break_duration')
-        # print("Received POST:", study, brk)
-        if study:
-            user_settings.study_duration = int(study)
-        if brk:
-            user_settings.break_duration = int(brk)
-        user_settings.save()
-        # print("Saved settings:", user_settings.study_duration, user_settings.break_duration)
-        return redirect('main')   # This matches the url name for /main/dashboard/
+        try:
+            user_settings.study_duration = int(request.POST.get('study_duration', user_settings.study_duration))
+            user_settings.break_duration = int(request.POST.get('break_duration', user_settings.break_duration))
+            user_settings.save()
+            messages.success(request, "Settings updated successfully!")
+        except ValueError:
+            messages.error(request, "Invalid input. Please enter valid numbers.")
+        return redirect('settings')
+
     return render(request, 'segments/settings.html', {'user_settings': user_settings})
 
 

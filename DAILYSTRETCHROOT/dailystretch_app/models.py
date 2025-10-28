@@ -21,6 +21,8 @@ class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     study_duration = models.PositiveIntegerField(default=25)
     break_duration = models.PositiveIntegerField(default=5)
+    bio = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to='profile_pics/', default='default-avatar.png', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s Settings"

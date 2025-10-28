@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile - DailyStretch</title>
+    <link rel="stylesheet" href="{% static 'dailystretch_app/css/segments/profile.css' %}">
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-card">
+            <h2>Your Profile</h2>
+
+            <div class="avatar-section">
+                {% if user_settings.avatar %}
+                <img src="{{ user_settings.avatar.url }}" alt="Avatar" class="profile-avatar" width="120" height="120">
+                {% else %}
+                <img src="{% static 'dailystretch_app/images/default-avatar.png' %}" alt="Avatar" class="profile-avatar"
+                    width="120" height="120">
+                {% endif %}
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>First Name:</label>
+                <input type="text" name="first_name" value="{{ request.user.first_name }}" />
+
+                <label>Last Name:</label>
+                <input type="text" name="last_name" value="{{ request.user.last_name }}" />
+
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ request.user.email }}" />
+
+                <label>Bio:</label>
+                <textarea name="bio" placeholder="Write something about yourself...">{{ user_settings.bio }}</textarea>
+
+                <label>Change Profile Picture:</label>
+                <input type="file" name="avatar" accept="image/*" />
+
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+
+            <a href="{% url 'settings' %}" class="settings-link">⚙ Back to Settings</a>
+        </div>
+    </div>
+</body>
+
+</html>

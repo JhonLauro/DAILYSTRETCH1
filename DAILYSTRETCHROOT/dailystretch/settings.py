@@ -1,5 +1,5 @@
 """
-Django settings for dailystretch project.
+Django settings for dailystretch project (Render-ready).
 """
 
 from pathlib import Path
@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-
 # ------------------------------
 # Security
 # ------------------------------
@@ -22,7 +21,10 @@ SECRET_KEY = os.environ.get(
     "django-insecure-*-&su5(umv95o$-1v0ae)q3*&&o&5fdcf&cdoy9u@b&mo!1l+u"
 )
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split() or []
+
+# When deploying to Render, Render automatically sets the domain.
+# For now, use * to allow access — later you can restrict it.
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split()
 
 # ------------------------------
 # Application definition
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for Render static handling
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,17 +74,21 @@ WSGI_APPLICATION = 'dailystretch.wsgi.application'
 # ------------------------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.toutspsgjnhlfryvevqi',
-        'PASSWORD': 'qUMJN?L&M.sq&X6',  # use the raw password, no encoding
-        'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
-        'PORT': '6543',
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres.toutspsgjnhlfryvevqi',
+            'PASSWORD': 'qUMJN?L&M.sq&X6',  # Supabase local dev
+            'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
+            'PORT': '6543',
+        }
+    }
 
 # ------------------------------
 # Password validation
@@ -102,10 +109,18 @@ USE_I18N = True
 USE_TZ = True
 
 # ------------------------------
-# Static files
+# Static files (important for Render)
 # ------------------------------
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Tell Whitenoise to compress and cache static files
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # ------------------------------
 # Default primary key field type

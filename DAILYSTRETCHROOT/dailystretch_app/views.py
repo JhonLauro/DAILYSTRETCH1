@@ -144,7 +144,23 @@ def favorite_list(request):
 
 @login_required(login_url='login')
 def profile_segment(request):
-    return render(request, 'segments/profile.html')
+    from .models import UserProfile
+
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        bio = request.POST.get('bio', '').strip()
+        avatar_url = request.POST.get('avatar_url', '').strip()
+
+        profile.bio = bio
+        profile.avatar_url = avatar_url
+        profile.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect('main')
+
+    return render(request, 'segments/profile.html', {'profile': profile})
+
 
 
 @login_required(login_url='login')

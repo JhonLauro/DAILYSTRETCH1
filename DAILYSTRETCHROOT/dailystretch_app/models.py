@@ -25,6 +25,19 @@ class UserSettings(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Settings"
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+    avatar_url = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_profile'
+
+    def __str__(self):
+        return self.user.username
+
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     routine = models.ForeignKey('Routine', on_delete=models.CASCADE)
